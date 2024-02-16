@@ -1,8 +1,37 @@
-import Content from "./Content"
-import Header from "./Header"
-import Total from "./Total"
+import { useState } from "react"
+
 
 const App = () => {
+ // save clicks of each button to its own state
+ const [good, setGood] = useState(0)
+ const [neutral, setNeutral] = useState(0)
+ const [bad, setBad] = useState(0)
+
+ return (
+   <div>
+     code here
+     <h1> Give Feedback</h1>
+     <button style={{marginRight:5}} onClick={()=>setGood(prev=>prev+1)}>good</button>
+     <button style={{marginRight:5}} onClick={()=>setNeutral((prev)=>prev+1)}>neutral</button>
+     <button onClick={()=>setBad((prev)=>prev+1)} >bad</button>
+
+     <h1>statistics</h1>
+     <p>good {good}</p>
+     <p>good {neutral}</p>
+     <p>good {bad}</p>
+   </div>
+ )
+  
+}
+
+export default App
+
+
+
+
+/**previous tasks 1-5
+ * 
+ * 
   const course = {
     name: 'Half Stack application development',
     parts: [
@@ -20,6 +49,15 @@ const App = () => {
       }
     ]
   }
+  const arto = {
+    name: 'Arto Hellas',
+    greet: function() {
+      console.log('hello, my name is ' + this.name)
+    },
+  }
+  
+  setTimeout(arto.greet, 1000)
+  setTimeout(arto.greet.bind(arto), 1000)
   return (
     <div>
     
@@ -28,6 +66,4 @@ const App = () => {
      <Total parts={course.parts} />
     </div>
   )
-}
-
-export default App
+ */
