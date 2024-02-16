@@ -7,6 +7,14 @@ const App = () => {
  const [neutral, setNeutral] = useState(0)
  const [bad, setBad] = useState(0)
 
+ const avarege = (good,neutral,bad)=>{
+  let avrg = (good+neutral+bad)/3; 
+  return avrg; 
+ }
+ const getPositive =(good,neutral,bad)=>{
+  let total = good+neutral+bad;
+  return good / total; 
+ }
  return (
    <div>
      code here
@@ -19,6 +27,9 @@ const App = () => {
      <p>good {good}</p>
      <p>good {neutral}</p>
      <p>good {bad}</p>
+     <p>all {bad+good+neutral} </p>
+    <p>avarege {avarege(good,neutral,bad)} </p>
+    <p>positive {getPositive(good,neutral,bad)}% </p>
    </div>
  )
   
