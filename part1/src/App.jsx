@@ -3,68 +3,31 @@
 import { useState } from "react";
 import StatisticLine from "./StatisticLine";
 
-const Statistics = ({ good, bad, neutral, avarege, getPositive }) => {
-  return (
-    <>
-      <h1>statistics</h1>
-      <tr>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="neutral" value={neutral} />
-        <StatisticLine text="bad" value={bad} />
-        <StatisticLine text="all" value={bad + good + neutral} />
-        <StatisticLine text="avarege" value={avarege(good, neutral, bad)} />
-        <StatisticLine
-          text="positive"
-          value={getPositive(good, neutral, bad)}
-        />
-      </tr>
-    </>
-  );
-};
-
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const anecdotes = [
+    "If it hurts, do it more often.",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+    "The only way to go fast, is to go well.",
+  ];
 
-  const avarege = (good, neutral, bad) => {
-    let avrg = (good + neutral + bad) / 3;
-    return avrg;
-  };
-  const getPositive = (good, neutral, bad) => {
-    let total = good + neutral + bad;
-    return good / total + "%";
-  };
+  const [selected, setSelected] = useState(0);
+  if (selected >= anecdotes.length) {
+    setSelected(0);
+  }
   return (
     <div>
-      code here
-      <h1> Give Feedback</h1>
-      <button
-        style={{ marginRight: 5 }}
-        onClick={() => setGood((prev) => prev + 1)}
-      >
-        good
+      {anecdotes[selected]}
+      <br />
+      <br />
+
+      <button onClick={() => setSelected((prev) => prev + 1)}>
+        nex anectod
       </button>
-      <button
-        style={{ marginRight: 5 }}
-        onClick={() => setNeutral((prev) => prev + 1)}
-      >
-        neutral
-      </button>
-      <button onClick={() => setBad((prev) => prev + 1)}>bad</button>
-      {bad !== 0 || good !== 0 || neutral !== 0 ? (
-        <Statistics
-          good={good}
-          bad={bad}
-          neutral={neutral}
-          getPositive={getPositive}
-          avarege={avarege}
-        />
-      ) : (
-        <p>No feedback given</p>
-      )}
-      <div></div>
     </div>
   );
 };
