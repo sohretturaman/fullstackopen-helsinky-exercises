@@ -15,18 +15,30 @@ const App = () => {
     "The only way to go fast, is to go well.",
   ];
 
+  const Points = [1, 4, 6, 3, 2, 1, 3];
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState([1, 4, 6, 3, 2, 1, 3]);
   if (selected >= anecdotes.length) {
     setSelected(0);
   }
+
+  const handleVote = () => {
+    let newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+
+    console.log("copy value", selected, points[selected]);
+  };
   return (
     <div>
       {anecdotes[selected]}
       <br />
       <br />
 
+      <button onClick={handleVote}>Vote </button>
+      <p>Vote{points[selected]} </p>
       <button onClick={() => setSelected((prev) => prev + 1)}>
-        nex anectod
+        next anectod
       </button>
     </div>
   );
