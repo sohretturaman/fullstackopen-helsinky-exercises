@@ -1,16 +1,18 @@
 import { useState } from "react"
+import StatisticLine from "./StatisticLine";
 
 
 
 const Statistics =({good,bad,neutral,avarege,getPositive})=>{
   return <div>
        <h1>statistics</h1>
-     <p>good {good}</p>
-     <p>good {neutral}</p>
-     <p>good {bad}</p>
-     <p>all {bad+good+neutral} </p>
-    <p>avarege {avarege(good,neutral,bad)} </p>
-    <p>positive {getPositive(good,neutral,bad)}% </p>
+       <StatisticLine text='good' value={good} />
+       <StatisticLine text='neutral' value={neutral} />
+       <StatisticLine text='bad' value={bad} />
+       <StatisticLine text='all' value={bad+good+neutral}/>
+       <StatisticLine text='avarege' value={avarege(good,neutral,bad)} />
+       <StatisticLine text='positive' value={getPositive(good,neutral,bad)} />
+   
   </div>;
 }
 
@@ -26,7 +28,7 @@ const App = () => {
  }
  const getPositive =(good,neutral,bad)=>{
   let total = good+neutral+bad;
-  return good / total; 
+  return good / total +'%'; 
  }
  return (
    <div>
