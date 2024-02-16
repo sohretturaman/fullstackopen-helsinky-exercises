@@ -17,7 +17,7 @@ const App = () => {
 
   const Points = [1, 4, 6, 3, 2, 1, 3];
   const [selected, setSelected] = useState(0);
-  const [points, setPoints] = useState([1, 4, 6, 3, 2, 1, 3]);
+  const [points, setPoints] = useState([1, 4, 6, 7, 2, 1, 3]);
   if (selected >= anecdotes.length) {
     setSelected(0);
   }
@@ -29,17 +29,31 @@ const App = () => {
 
     console.log("copy value", selected, points[selected]);
   };
+  const findMax = () => {
+    let maxVal = points[0];
+    let whichItem = 0;
+
+    for (let i = 1; i < points.length; i++) {
+      if (points[i] > maxVal) {
+        maxVal = points[i];
+        whichItem = i;
+      }
+    }
+
+    return whichItem;
+  };
   return (
     <div>
       {anecdotes[selected]}
       <br />
       <br />
-
       <button onClick={handleVote}>Vote </button>
-      <p>Vote{points[selected]} </p>
+      <p>Has {points[selected]} Votes</p>
       <button onClick={() => setSelected((prev) => prev + 1)}>
         next anectod
       </button>
+      <h1>Anecdote with most votes</h1>
+      <p>max vlaue item {anecdotes[findMax()]} </p>
     </div>
   );
 };
