@@ -1,6 +1,9 @@
 /** @format */
 
 import { useState } from "react";
+import Filter from "./Filter";
+import PersonsFrom from "./PersonsFrom";
+import Persons from "./Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -49,65 +52,24 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Filter
+        search={search}
+        setSearch={setSearch}
+        filterPersons={filterPersons}
+        filteredPersons={filteredPersons}
+      />
 
-      <form onSubmit={handleInput}>
-        <div>
-          Search:{" "}
-          <input
-            placeholder="Search.."
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <br />
-        <br />
-        <div>
-          name:{" "}
-          <input
-            placeholder="enter a new name"
-            name="firstname"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-          <br />
-          Phone:{""}
-          <input
-            placeholder="enter a new number"
-            name="phonenumber"
-            value={newNumber}
-            onChange={(e) => setNewNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-
-      <h2>Filtered Persons</h2>
-      {filteredPersons.map((item, index) => {
-        return (
-          <div key={index}>
-            <p>
-              {item.name}
-              {item.number}{" "}
-            </p>
-          </div>
-        );
-      })}
-      <br />
+      <h3>Add a new Person</h3>
+      <PersonsFrom
+        handleInput={handleInput}
+        setNewName={setNewName}
+        setNewNumber={setNewNumber}
+        newName={newName}
+        newNumber={newNumber}
+      />
       <br />
       <h2>Numbers</h2>
-      {persons.map((item, index) => {
-        return (
-          <div key={index}>
-            <p>
-              {item.name}
-              {item.number}{" "}
-            </p>
-          </div>
-        );
-      })}
+      <Persons persons={Persons} />
     </div>
   );
 };
