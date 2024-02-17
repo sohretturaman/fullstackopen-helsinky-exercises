@@ -3,8 +3,9 @@
 import { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "" }]);
+  const [persons, setPersons] = useState([{ name: "", number: null }]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState(null);
 
   const findSame = (item) => {
     const isExist = persons.find((person) => person.name === item);
@@ -20,8 +21,9 @@ const App = () => {
 
       return;
     }
-    setPersons((prev) => [{ name: newName }, ...prev]);
+    setPersons((prev) => [{ name: newName, number: newNumber }, ...prev]);
     setNewName("");
+    setNewNumber("");
   };
 
   return (
@@ -36,6 +38,14 @@ const App = () => {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
           />
+          <br />
+          Phone:{""}
+          <input
+            placeholder="enter a new number"
+            name="phonenumber"
+            value={newNumber}
+            onChange={(e) => setNewNumber(e.target.value)}
+          />
         </div>
         <div>
           <button type="submit">add</button>
@@ -45,7 +55,10 @@ const App = () => {
       {persons.map((item, index) => {
         return (
           <div key={index}>
-            <p>{item.name} </p>
+            <p>
+              {item.name}
+              {item.number}{" "}
+            </p>
           </div>
         );
       })}
