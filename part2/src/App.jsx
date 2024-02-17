@@ -1,57 +1,44 @@
 /** @format */
 
-import Course from "./Course";
+import { useState } from "react";
 
 const App = () => {
-  const courses = [
-    {
-      name: "Half Stack application development",
-      id: 1,
-      parts: [
-        {
-          name: "Fundamentals of React",
-          exercises: 10,
-          id: 1,
-        },
-        {
-          name: "Using props to pass data",
-          exercises: 7,
-          id: 2,
-        },
-        {
-          name: "State of a component",
-          exercises: 14,
-          id: 3,
-        },
-        {
-          name: "Redux",
-          exercises: 11,
-          id: 4,
-        },
-      ],
-    },
-    {
-      name: "Node.js",
-      id: 2,
-      parts: [
-        {
-          name: "Routing",
-          exercises: 3,
-          id: 1,
-        },
-        {
-          name: "Middlewares",
-          exercises: 7,
-          id: 2,
-        },
-      ],
-    },
-  ];
+  const [persons, setPersons] = useState([{ name: "" }]);
+  const [newName, setNewName] = useState("");
 
+  const handleInput = (e) => {
+    e.preventDefault();
+    console.log("new name", newName);
+    setPersons((prev) => [...prev, { name: newName }]);
+    setNewName("");
+    console.log("persons", persons);
+  };
   return (
-    <>
-      <Course courses={courses} />;
-    </>
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={handleInput}>
+        <div>
+          name:{" "}
+          <input
+            placeholder="enter a new name"
+            name="firstname"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map((item) => {
+        return (
+          <div>
+            <p>{item.name} </p>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
