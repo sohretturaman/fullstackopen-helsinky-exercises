@@ -5,7 +5,7 @@ import React from "react";
 const Persons = ({ persons }) => {
   return (
     <div>
-      {persons.map((item, index) => {
+      {persons?.map((item, index) => {
         return (
           <div key={index}>
             <p>

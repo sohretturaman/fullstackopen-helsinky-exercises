@@ -4,18 +4,18 @@ import { useState } from "react";
 import Filter from "./Filter";
 import PersonsFrom from "./PersonsFrom";
 import Persons from "./Persons";
+import personsData from "./db.json";
 
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
   const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState(null);
+  const [newNumber, setNewNumber] = useState(0);
   const [search, setSearch] = useState("");
-  const [filteredPersons, setFilteredPersons] = useState([]);
+  const [filteredPersons, setFilteredPersons] = useState(personsData.persons);
+
+  console.log("persons data", personsData.persons);
 
   const filterPersons = () => {
     const trimmedName = search.trim();
@@ -69,7 +69,7 @@ const App = () => {
       />
       <br />
       <h2>Numbers</h2>
-      <Persons persons={Persons} />
+      <Persons persons={persons} />
     </div>
   );
 };
