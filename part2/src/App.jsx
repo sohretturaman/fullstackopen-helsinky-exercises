@@ -6,13 +6,24 @@ const App = () => {
   const [persons, setPersons] = useState([{ name: "" }]);
   const [newName, setNewName] = useState("");
 
+  const findSame = (item) => {
+    const isExist = persons.find((person) => person.name === item);
+
+    return isExist ? isExist.name : null;
+  };
   const handleInput = (e) => {
     e.preventDefault();
-    console.log("new name", newName);
-    setPersons((prev) => [...prev, { name: newName }]);
+    const result = findSame(newName);
+    console.log("result", result);
+    if (result) {
+      console.log(newName + "name is alrady exist");
+
+      return;
+    }
+    setPersons((prev) => [{ name: newName }, ...prev]);
     setNewName("");
-    console.log("persons", persons);
   };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -31,9 +42,9 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((item) => {
+      {persons.map((item, index) => {
         return (
-          <div>
+          <div key={index}>
             <p>{item.name} </p>
           </div>
         );
