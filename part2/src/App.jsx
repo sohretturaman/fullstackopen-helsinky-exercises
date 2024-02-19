@@ -6,11 +6,10 @@ import PersonsFrom from "./PersonsFrom";
 import Persons from "./Persons";
 import personsData from "../db.json";
 import axios from "axios";
+import PhoneBook from "./services/PhoneBook";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState(0);
   const [search, setSearch] = useState("");
@@ -18,6 +17,13 @@ const App = () => {
   const [newNote, setNewNote] = useState("");
 
   //  console.log("persons data", personsData.persons);
+
+  useEffect(() => {
+    PhoneBook.getAll().then((res) => {
+      //console.log("res.status", res.status, "res.data", res.data);
+      setPersons(res.data);
+    });
+  }, []);
 
   const filterPersons = () => {
     const trimmedName = search.trim();
@@ -47,18 +53,20 @@ const App = () => {
       return;
     }
     const newPersonObject = {
+      id: Math.floor(Math.random() * (100 - 10)),
       name: newName,
       number: newNumber,
     };
+
+    PhoneBook.Add(newPersonObject).then((res) =>
+      console.log("data in add", res.data)
+    );
+
     setPersons((prev) => [
       { name: newPersonObject.name, number: newPersonObject.number },
       ...prev,
     ]);
-    axios
-      .post("http://localhost:3000/persons", newPersonObject)
-      .then((response) => {
-        console.log("resposne data  in localhost", response);
-      });
+
     setNewName("");
     setNewNumber("");
   };
