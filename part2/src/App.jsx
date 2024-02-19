@@ -45,26 +45,54 @@ const App = () => {
 
   const handleInput = (e) => {
     e.preventDefault();
-    const result = findSame(newName);
-    filterPersons();
-    if (result) {
-      console.log(newName + "name is alrady exist");
+    const existingPerson = persons.find((person) => person.name === newName);
 
-      return;
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${newName} is already in the phonebook. Do you want to update the number?`
+      );
+
+      if (!confirmUpdate) {
+        return;
+      }
+
+      const updatedPerson = {
+        ...existingPerson,
+        number: newNumber,
+      };
+
+      PhoneBook.update(existingPerson.id, updatedPerson)
+        .then((res) => {
+          console.log("Updated person:", res.data);
+          setPersons((prevPersons) =>
+            prevPersons.map((person) =>
+              person.id === updatedPerson.id ? res.data : person
+            )
+          );
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.error("Error updating person:", error);
+        });
+    } else {
+      const newPersonObject = {
+        id: Math.floor(Math.random() * (100 - 10)),
+        name: newName,
+        number: newNumber,
+      };
+
+      PhoneBook.Add(newPersonObject)
+        .then((res) => {
+          console.log("Added new person:", res.data);
+          setPersons((prevPersons) => [res.data, ...prevPersons]);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.error("Error adding new person:", error);
+        });
     }
-    const newPersonObject = {
-      id: Math.floor(Math.random() * (100 - 10)),
-      name: newName,
-      number: newNumber,
-    };
-
-    PhoneBook.Add(newPersonObject).then((res) => {
-      console.log("data in add", res.data);
-      setPersons((prevPersons) => [newPersonObject, ...prevPersons]);
-    });
-
-    setNewName("");
-    setNewNumber("");
   };
 
   const handleDelete = (id) => {
