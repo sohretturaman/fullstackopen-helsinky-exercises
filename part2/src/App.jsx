@@ -9,7 +9,7 @@ import axios from "axios";
 import PhoneBook from "./services/PhoneBook";
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
+  const [persons, setPersons] = useState();
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState(0);
   const [search, setSearch] = useState("");
@@ -58,17 +58,33 @@ const App = () => {
       number: newNumber,
     };
 
-    PhoneBook.Add(newPersonObject).then((res) =>
-      console.log("data in add", res.data)
-    );
-
-    setPersons((prev) => [
-      { name: newPersonObject.name, number: newPersonObject.number },
-      ...prev,
-    ]);
+    PhoneBook.Add(newPersonObject).then((res) => {
+      console.log("data in add", res.data);
+      setPersons((prevPersons) => [newPersonObject, ...prevPersons]);
+    });
 
     setNewName("");
     setNewNumber("");
+  };
+
+  const handleDelete = (id) => {
+    console.log(".id in appjs", id);
+    const note = persons.find((n) => n.id === id);
+    const changedNote = {
+      ...note,
+      important: note.important === true ? false : true,
+    };
+
+    PhoneBook.deletePerson(id)
+      .then(() => {
+        console.log("Successfully deleted");
+        setPersons((prevPersons) =>
+          prevPersons.filter((person) => person.id !== id)
+        );
+      })
+      .catch((error) => {
+        alert(`Error deleting the person: ${error}`);
+      });
   };
 
   return (
@@ -91,7 +107,7 @@ const App = () => {
       />
       <br />
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons persons={persons} handleDelete={handleDelete} />
     </div>
   );
 };

@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, handleDelete }) => {
   return (
     <div>
       {persons?.map((item, index) => {
@@ -11,6 +11,9 @@ const Persons = ({ persons }) => {
             <p>
               {item.name}
               {item.number}{" "}
+              {item.important ? (
+                <button onClick={() => handleDelete(item.id)}>Delete</button>
+              ) : null}
             </p>
           </div>
         );
