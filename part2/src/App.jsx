@@ -1,10 +1,11 @@
 /** @format */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Filter from "./Filter";
 import PersonsFrom from "./PersonsFrom";
 import Persons from "./Persons";
-import personsData from "./db.json";
+import personsData from "../db.json";
+import axios from "axios";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -14,8 +15,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState(0);
   const [search, setSearch] = useState("");
   const [filteredPersons, setFilteredPersons] = useState(personsData.persons);
+  const [newNote, setNewNote] = useState("");
 
-  console.log("persons data", personsData.persons);
+  //  console.log("persons data", personsData.persons);
 
   const filterPersons = () => {
     const trimmedName = search.trim();
@@ -44,7 +46,19 @@ const App = () => {
 
       return;
     }
-    setPersons((prev) => [{ name: newName, number: newNumber }, ...prev]);
+    const newPersonObject = {
+      name: newName,
+      number: newNumber,
+    };
+    setPersons((prev) => [
+      { name: newPersonObject.name, number: newPersonObject.number },
+      ...prev,
+    ]);
+    axios
+      .post("http://localhost:3000/persons", newPersonObject)
+      .then((response) => {
+        console.log("resposne data  in localhost", response);
+      });
     setNewName("");
     setNewNumber("");
   };
@@ -75,3 +89,20 @@ const App = () => {
 };
 
 export default App;
+
+/* const addNote = (event) => {
+  event.preventDefault();
+  const noteObject = {
+    content: newNote,
+    important: Math.random() < 0.5,
+  };
+
+  axios.post("http://localhost:3001/notes", noteObject).then((response) => {
+    console.log("resposne data  in localhost", response);
+  });
+
+
+  => to conncet  local server 
+  1=> npm install json-server
+  2=> npx json-server db.json
+}; */
