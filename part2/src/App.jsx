@@ -15,6 +15,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState(0);
   const [newNote, setNewNote] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     PhoneBook.getAll().then((res) => {
@@ -43,19 +44,25 @@ const App = () => {
 
       PhoneBook.update(existingPerson.id, updatedPerson)
         .then((res) => {
-          console.log("Updated person:", res.data);
+          console.log("Updated person:", res.data.name);
 
           setPersons((prevPersons) =>
             prevPersons.map((person) =>
               person.id === updatedPerson.id ? res.data : person
             )
           );
-          setSuccessMessage("Updated person", existingPerson.name);
+          setSuccessMessage("Updated person", res.data.name);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
           setNewName("");
           setNewNumber("");
         })
         .catch((error) => {
-          console.error("Error updating person:", error);
+          setErrorMessage("Error on updating person", error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         });
     } else {
       const newPersonObject = {
@@ -71,11 +78,17 @@ const App = () => {
             setSuccessMessage(null);
           }, 5000);
           setPersons((prevPersons) => [res.data, ...prevPersons]);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
           setNewName("");
           setNewNumber("");
         })
         .catch((error) => {
-          console.error("Error adding new person:", error);
+          setErrorMessage("Error on adding a new person", error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         });
     }
   };
@@ -100,7 +113,10 @@ const App = () => {
         }, 5000);
       })
       .catch((error) => {
-        alert(`Error deleting the person: ${error}`);
+        setErrorMessage("Error on deleting the person", error);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
       });
   };
 
@@ -108,7 +124,12 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      {successMessage && <Notification message={successMessage} />}
+      {successMessage && (
+        <Notification
+          successMessage={successMessage}
+          errorMessage={errorMessage}
+        />
+      )}
       <h3>Add a new Person</h3>
       <PersonsFrom
         handleInput={handleInput}

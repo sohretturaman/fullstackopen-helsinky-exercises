@@ -1,36 +1,6 @@
 {
   "persons": [
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4",
-      "important": true
-    },
-    {
-      "id": "4b5d",
-      "name": "şöhret",
-      "number": "0sdfdsgfsd",
-      "important": true
-    },
-    {
-      "id": "4",
-      "name": "şöhret meryem",
-      "number": "0656565156",
-      "important": true
-    },
-    {
-      "id": "51",
-      "name": "şöhret",
-      "number": "0654651",
-      "important": true
-    },
-    {
-      "id": "21",
-      "name": "new",
-      "number": "0654651",
-      "important": true
-    },
-    {
       "id": "34",
       "name": "Dan Abramov",
       "number": "0555555"
