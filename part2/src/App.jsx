@@ -7,16 +7,14 @@ import Persons from "./Persons";
 import personsData from "../db.json";
 import axios from "axios";
 import PhoneBook from "./services/PhoneBook";
+import Notification from "./Notification";
 
 const App = () => {
-  const [persons, setPersons] = useState();
+  const [persons, setPersons] = useState(personsData.persons);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState(0);
-  const [search, setSearch] = useState("");
-  const [filteredPersons, setFilteredPersons] = useState(personsData.persons);
   const [newNote, setNewNote] = useState("");
-
-  //  console.log("persons data", personsData.persons);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     PhoneBook.getAll().then((res) => {
@@ -24,24 +22,6 @@ const App = () => {
       setPersons(res.data);
     });
   }, []);
-
-  const filterPersons = () => {
-    const trimmedName = search.trim();
-    if (trimmedName === "") {
-      setFilteredPersons([]);
-      return;
-    }
-    const filteredData = persons.filter((item) => {
-      return item.name.toLowerCase().includes(trimmedName.toLowerCase());
-    });
-    console.log("filterd data", filteredData);
-
-    setFilteredPersons(filteredData);
-  };
-  const findSame = (item) => {
-    const isExist = persons.find((person) => person.name === item);
-    return isExist ? isExist.name : null;
-  };
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -64,11 +44,13 @@ const App = () => {
       PhoneBook.update(existingPerson.id, updatedPerson)
         .then((res) => {
           console.log("Updated person:", res.data);
+
           setPersons((prevPersons) =>
             prevPersons.map((person) =>
               person.id === updatedPerson.id ? res.data : person
             )
           );
+          setSuccessMessage("Updated person", existingPerson.name);
           setNewName("");
           setNewNumber("");
         })
@@ -84,7 +66,10 @@ const App = () => {
 
       PhoneBook.Add(newPersonObject)
         .then((res) => {
-          console.log("Added new person:", res.data);
+          setSuccessMessage("Added new person:", res.data);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
           setPersons((prevPersons) => [res.data, ...prevPersons]);
           setNewName("");
           setNewNumber("");
@@ -106,9 +91,13 @@ const App = () => {
     PhoneBook.deletePerson(id)
       .then(() => {
         console.log("Successfully deleted");
+        setSuccessMessage("Successfully deleted");
         setPersons((prevPersons) =>
           prevPersons.filter((person) => person.id !== id)
         );
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
       })
       .catch((error) => {
         alert(`Error deleting the person: ${error}`);
@@ -118,13 +107,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter
-        search={search}
-        setSearch={setSearch}
-        filterPersons={filterPersons}
-        filteredPersons={filteredPersons}
-      />
 
+      {successMessage && <Notification message={successMessage} />}
       <h3>Add a new Person</h3>
       <PersonsFrom
         handleInput={handleInput}
