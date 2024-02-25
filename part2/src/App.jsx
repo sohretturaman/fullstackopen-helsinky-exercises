@@ -1,165 +1,78 @@
 /** @format */
 
-import { useEffect, useState } from "react";
-import Filter from "./Filter";
-import PersonsFrom from "./PersonsFrom";
-import Persons from "./Persons";
-import personsData from "../db.json";
-import axios from "axios";
-import PhoneBook from "./services/PhoneBook";
-import Notification from "./Notification";
+import React, { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState(personsData.persons);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState(0);
-  const [newNote, setNewNote] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [query, setQuery] = useState("");
+  const [countries, setCountries] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    PhoneBook.getAll().then((res) => {
-      //console.log("res.status", res.status, "res.data", res.data);
-      setPersons(res.data);
-    });
-  }, []);
-
-  const handleInput = (e) => {
-    e.preventDefault();
-    const existingPerson = persons.find((person) => person.name === newName);
-
-    if (existingPerson) {
-      const confirmUpdate = window.confirm(
-        `${newName} is already in the phonebook. Do you want to update the number?`
-      );
-
-      if (!confirmUpdate) {
-        return;
-      }
-
-      const updatedPerson = {
-        ...existingPerson,
-        number: newNumber,
-      };
-
-      PhoneBook.update(existingPerson.id, updatedPerson)
-        .then((res) => {
-          console.log("Updated person:", res.data.name);
-
-          setPersons((prevPersons) =>
-            prevPersons.map((person) =>
-              person.id === updatedPerson.id ? res.data : person
-            )
-          );
-          setSuccessMessage("Updated person", res.data.name);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 5000);
-          setNewName("");
-          setNewNumber("");
-        })
-        .catch((error) => {
-          setErrorMessage("Error on updating person", error);
-          setTimeout(() => {
-            setErrorMessage(null);
-          }, 5000);
-        });
-    } else {
-      const newPersonObject = {
-        id: Math.floor(Math.random() * (100 - 10)),
-        name: newName,
-        number: newNumber,
-      };
-
-      PhoneBook.Add(newPersonObject)
-        .then((res) => {
-          setSuccessMessage("Added new person:", res.data);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 5000);
-          setPersons((prevPersons) => [res.data, ...prevPersons]);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 5000);
-          setNewName("");
-          setNewNumber("");
-        })
-        .catch((error) => {
-          setErrorMessage("Error on adding a new person", error);
-          setTimeout(() => {
-            setErrorMessage(null);
-          }, 5000);
-        });
-    }
+  const handleChange = (e) => {
+    setQuery(e.target.value);
   };
 
-  const handleDelete = (id) => {
-    console.log(".id in appjs", id);
-    const note = persons.find((n) => n.id === id);
-    const changedNote = {
-      ...note,
-      important: note.important === true ? false : true,
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `https://restcountries.com/v3.1/name/${query}`
+      );
+      const data = await response.json();
+      if (data.length > 10) {
+        setErrorMessage("Too many matches, please be more specific.");
+      } else {
+        setCountries(data);
+        console.log("data in fetch", data[0]);
 
-    PhoneBook.deletePerson(id)
-      .then(() => {
-        console.log("Successfully deleted");
-        setSuccessMessage("Successfully deleted");
-        setPersons((prevPersons) =>
-          prevPersons.filter((person) => person.id !== id)
-        );
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
-      })
-      .catch((error) => {
-        setErrorMessage("Error on deleting the person", error);
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
+        setErrorMessage("");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setErrorMessage("Error fetching data. Please try again.");
+    }
   };
 
   return (
     <div>
-      <h2>Phonebook</h2>
-
-      {successMessage && (
-        <Notification
-          successMessage={successMessage}
-          errorMessage={errorMessage}
+      <h1>Country Information</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Search for a country..."
+          value={query}
+          onChange={handleChange}
         />
-      )}
-      <h3>Add a new Person</h3>
-      <PersonsFrom
-        handleInput={handleInput}
-        setNewName={setNewName}
-        setNewNumber={setNewNumber}
-        newName={newName}
-        newNumber={newNumber}
-      />
-      <br />
-      <h2>Numbers</h2>
-      <Persons persons={persons} handleDelete={handleDelete} />
+        <button type="submit">Search</button>
+      </form>
+      {errorMessage && <p>{errorMessage}</p>}
+      <div>
+        {countries.map((country) => {
+          let listOfLanguages = Object.values(country.languages);
+          console.log("country", listOfLanguages[0]);
+
+          return (
+            <div key={country.name.common}>
+              <h2>{country.name.common}</h2>
+              <p>Capital: {country.capital}</p>
+              <p>Area: {country.area}</p>
+              <p>Languages:</p>
+              <ul>
+                <li>{listOfLanguages[0]}</li>
+                {listOfLanguages[1] && <li>{listOfLanguages[1]}</li>}
+                {listOfLanguages[2] && <li>{listOfLanguages[2]}</li>}
+                {listOfLanguages[3] && <li>{listOfLanguages[3]}</li>}
+              </ul>
+              <img
+                src={country.flags.png}
+                alt="logo"
+                style={{ height: 100, width: 100 }}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
 export default App;
-
-/* const addNote = (event) => {
-  event.preventDefault();
-  const noteObject = {
-    content: newNote,
-    important: Math.random() < 0.5,
-  };
-
-  axios.post("http://localhost:3001/notes", noteObject).then((response) => {
-    console.log("resposne data  in localhost", response);
-  });
-
-
-  => to conncet  local server 
-  1=> npm install json-server
-  2=> npx json-server db.json
-}; */
