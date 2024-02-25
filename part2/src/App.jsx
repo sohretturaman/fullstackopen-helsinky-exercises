@@ -2,10 +2,13 @@
 
 import React, { useState } from "react";
 
+import DetailsComp from "./DetailsComp";
+
 const App = () => {
   const [query, setQuery] = useState("");
   const [countries, setCountries] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isShown, setIsShown] = useState(false);
 
   const handleChange = (e) => {
     setQuery(e.target.value);
@@ -32,6 +35,11 @@ const App = () => {
     }
   };
 
+  const handleShow = () => {
+    console.log("is clicked and data", countries);
+    setIsShown(!isShown);
+  };
+
   return (
     <div>
       <h1>Country Information</h1>
@@ -46,30 +54,16 @@ const App = () => {
       </form>
       {errorMessage && <p>{errorMessage}</p>}
       <div>
-        {countries.map((country) => {
-          let listOfLanguages = Object.values(country.languages);
-          console.log("country", listOfLanguages[0]);
-
-          return (
-            <div key={country.name.common}>
-              <h2>{country.name.common}</h2>
-              <p>Capital: {country.capital}</p>
-              <p>Area: {country.area}</p>
-              <p>Languages:</p>
-              <ul>
-                <li>{listOfLanguages[0]}</li>
-                {listOfLanguages[1] && <li>{listOfLanguages[1]}</li>}
-                {listOfLanguages[2] && <li>{listOfLanguages[2]}</li>}
-                {listOfLanguages[3] && <li>{listOfLanguages[3]}</li>}
-              </ul>
-              <img
-                src={country.flags.png}
-                alt="logo"
-                style={{ height: 100, width: 100 }}
-              />
-            </div>
-          );
-        })}
+        {countries.length > 0 &&
+          countries.map((country) => {
+            return (
+              <div>
+                <p>{country.name.common}</p>
+                <button onClick={handleShow}>show</button>
+                {isShown && <DetailsComp country={country} />}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
