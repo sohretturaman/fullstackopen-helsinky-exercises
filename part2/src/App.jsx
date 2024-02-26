@@ -1,14 +1,17 @@
 /** @format */
 
-import React, { useState } from "react";
+// App.js
+import React, { useEffect, useState } from "react";
 
 import DetailsComp from "./DetailsComp";
+import { convertGeocode, getCurrentWeather } from "./services/HttpWeather"; // Import getCurrentWeather function
 
 const App = () => {
   const [query, setQuery] = useState("");
   const [countries, setCountries] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isShown, setIsShown] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(null); // State to store the selected country
+  const [weather, setWeather] = useState(null); // State to store weather data
 
   const handleChange = (e) => {
     setQuery(e.target.value);
@@ -35,9 +38,22 @@ const App = () => {
     }
   };
 
-  const handleShow = () => {
-    console.log("is clicked and data", countries);
-    setIsShown(!isShown);
+  const handleShow = async (cityName) => {
+    // Set the selected country based on the cityName
+    const selectedCountry = countries.find(
+      (country) => country.name.common === cityName
+    );
+    setSelectedCountry(selectedCountry);
+
+    // Fetch weather data when showing details
+    const result = await convertGeocode(cityName);
+    if (result && result.length > 0) {
+      const { lat, lon } = result[0];
+      console.log("lat and lan", lat, lon);
+      const weatherData = await getCurrentWeather(lat, lon);
+      console.log("weather data in show", weatherData);
+      setWeather(weatherData);
+    }
   };
 
   return (
@@ -55,15 +71,18 @@ const App = () => {
       {errorMessage && <p>{errorMessage}</p>}
       <div>
         {countries.length > 0 &&
-          countries.map((country) => {
-            return (
-              <div>
-                <p>{country.name.common}</p>
-                <button onClick={handleShow}>show</button>
-                {isShown && <DetailsComp country={country} />}
-              </div>
-            );
-          })}
+          countries.map((country) => (
+            <div key={country.name.common}>
+              <p>{country.name.common}</p>
+              <button onClick={() => handleShow(country.name.common)}>
+                show
+              </button>
+              {selectedCountry &&
+                selectedCountry.name.common === country.name.common && (
+                  <DetailsComp country={country} weather={weather} />
+                )}
+            </div>
+          ))}
       </div>
     </div>
   );

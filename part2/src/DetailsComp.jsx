@@ -1,10 +1,11 @@
 /** @format */
 
+// DetailsComp.jsx
 import React from "react";
 
-const DetailsComp = ({ country }) => {
-  let listOfLanguages = Object.values(country.languages);
-  console.log("country in comp ", listOfLanguages[0]);
+const DetailsComp = ({ country, weather }) => {
+  var listOfLanguages = Object.values(country.languages);
+
   return (
     <div>
       <div>
@@ -24,6 +25,17 @@ const DetailsComp = ({ country }) => {
           style={{ height: 100, width: 100 }}
         />
       </div>
+      {weather && (
+        <div>
+          <h2>Weather in {country.capital}</h2>
+          <p>Temperature: {weather.main.temp}</p>
+          <p>Description: {weather.weather[0].description}</p>
+          <img
+            src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`}
+          />
+          {/* You can display other weather data here */}
+        </div>
+      )}
     </div>
   );
 };
