@@ -19,7 +19,9 @@ var requestTimeList = [];
 app.get("/api/persons", (req, res) => {
   const requestTime = new Date();
   requestTimeList.push(requestTime);
-  res.json(data);
+  res.json({
+    data: data,
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -36,16 +38,23 @@ app.get("/api/persons/:id", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const newId = Math.floor(Math.random() * 100);
-  const reqData = req.body;
-  reqData.id = newId;
-  if (!reqData.name || !reqData.number) {
-    res.status(400).send("missing name or number");
-  } else {
-    data.push(data);
-    res
-      .status(201)
-      .json({ message: "person added successfully", person: reqData });
+  const newItem = { id: newId, name: req.body.name, number: req.body.number };
+
+  console.log("new item data ", newItem);
+  if (!newItem.name || !newItem.number) {
+    return res.status(400).send("Missing name or number");
   }
+
+  const isExist = data.find((person) => person.name === newItem.name);
+  console.log("is exist ", isExist);
+  if (isExist) {
+    return res.status(409).send("Name already exists in the phonebook");
+  }
+
+  data.push(newItem); // Push the new item to the data array
+  res
+    .status(201)
+    .json({ message: "Person added successfully", person: newItem });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
