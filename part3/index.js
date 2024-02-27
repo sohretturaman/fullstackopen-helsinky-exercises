@@ -22,6 +22,15 @@ app.get("/api/persons", (req, res) => {
   res.json(data);
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const person = data.find((person) => person.id === id);
+  if (person) {
+    res.status(200).json(person);
+  } else {
+    res.status(404).send("person not found");
+  }
+});
 app.get("/info", (req, res) => {
   const length = data.length;
   console.log("request time list", requestTimeList);
