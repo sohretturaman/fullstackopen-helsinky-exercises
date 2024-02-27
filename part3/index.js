@@ -34,6 +34,20 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
+app.post("/api/persons", (req, res) => {
+  const newId = Math.floor(Math.random() * 100);
+  const reqData = req.body;
+  reqData.id = newId;
+  if (!reqData.name || !reqData.number) {
+    res.status(400).send("missing name or number");
+  } else {
+    data.push(data);
+    res
+      .status(201)
+      .json({ message: "person added successfully", person: reqData });
+  }
+});
+
 app.delete("/api/persons/:id", (req, res) => {
   const reqId = Number(req.params.id);
 
