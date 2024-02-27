@@ -46,7 +46,7 @@ app.post("/api/persons", (req, res) => {
   }
 
   const isExist = data.find((person) => person.name === newItem.name);
-  console.log("is exist ", isExist);
+
   if (isExist) {
     return res.status(409).send("Name already exists in the phonebook");
   }
