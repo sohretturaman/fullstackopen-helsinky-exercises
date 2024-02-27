@@ -2,14 +2,32 @@
 
 var data = require("./data");
 const express = require("express");
+const requestLogger = require("./logger");
+const morgan = require("morgan");
 
 const app = express();
+app.use(requestLogger); //use middleware
 app.use(express.json());
 
 app.use((req, res, next) => {
   req.requestTime = new Date();
   next();
 });
+const EdittedMorgan = morgan(function (tokens, req, res) {
+  if (res.statusCode >= 200 && res.statusCode < 300) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+    ].join(" ");
+  }
+});
+app.use(morgan("tiny"));
+//app.use(EdittedMorgan);
 
 /* app.get("/", (req, res) => {
   res.json(data);
