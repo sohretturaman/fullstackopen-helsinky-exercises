@@ -1,16 +1,39 @@
 /** @format */
 
-const http = require("http");
 const data = require("./data");
-/*
-const axios = require("axios");
-
 const express = require("express");
-const app = express();
 
- app.get("/api/persons", (req, res) => {
+const app = express();
+app.use(express.json());
+
+app.use((req, res, next) => {
+  req.requestTime = new Date();
+  next();
+});
+
+/* app.get("/", (req, res) => {
   res.json(data);
 }); */
+
+var requestTimeList = [];
+app.get("/api/persons", (req, res) => {
+  const requestTime = new Date();
+  requestTimeList.push(requestTime);
+  res.json(data);
+});
+
+app.get("/info", (req, res) => {
+  const length = data.length;
+  console.log("request time list", requestTimeList);
+
+  res.json({
+    message: `Phonebook has info for ${length} people`,
+    requestTimeList: requestTimeList,
+  });
+});
+app.listen(3001, () => {});
+/* 
+GOT DATA FROM APİ WİTH HTTP SERVER
 http
   .createServer(function (req, res) {
     // res.writeHead(200, { "Content-Type": "text/html" });
@@ -22,17 +45,4 @@ http
   .listen(3001, () => {
     console.log("server is running on port 3001");
   });
-/* axios
-  .get("https://localhost:30001/api")
-  .then((response) => {
-    console.log(response.data.url);
-    console.log(response.data.explanation);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
  */
-
-/* app.listen(3001, () => {
-  console.log("server is running on port 3001");
-}); */
