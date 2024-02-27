@@ -1,6 +1,6 @@
 /** @format */
 
-const data = require("./data");
+var data = require("./data");
 const express = require("express");
 
 const app = express();
@@ -26,11 +26,29 @@ app.get("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person = data.find((person) => person.id === id);
   if (person) {
-    res.status(200).json(person);
+    res.status(200).json({
+      message: "person successfully found",
+    });
   } else {
     res.status(404).send("person not found");
   }
 });
+
+app.delete("/api/persons/:id", (req, res) => {
+  const reqId = Number(req.params.id);
+
+  const person = data.find((person) => person.id === reqId);
+  if (person) {
+    data = data.filter((person) => person.id !== reqId);
+    res.status(200).json({
+      message: "person is successfully deleted",
+      person: person,
+    });
+  } else {
+    res.status(404).send("person not found");
+  }
+});
+
 app.get("/info", (req, res) => {
   const length = data.length;
   console.log("request time list", requestTimeList);
