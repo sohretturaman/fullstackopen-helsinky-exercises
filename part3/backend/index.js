@@ -4,8 +4,10 @@ var data = require("./data");
 const express = require("express");
 const requestLogger = require("./logger");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(requestLogger); //use middleware
 app.use(express.json());
 
@@ -99,7 +101,9 @@ app.get("/info", (req, res) => {
     requestTimeList: requestTimeList,
   });
 });
-app.listen(3001, () => {});
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
+});
 /* 
 GOT DATA FROM APİ WİTH HTTP SERVER
 http
