@@ -7,8 +7,12 @@ const PersonsFrom = ({
   setNewName,
   newNumber,
   setNewNumber,
-  handleInput,
+  handleForminput,
 }) => {
+  const handleInput = (e) => {
+    e.preventDefault();
+    handleForminput();
+  };
   return (
     <div>
       <form onSubmit={handleInput}>

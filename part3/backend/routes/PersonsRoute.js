@@ -1,27 +1,35 @@
 /** @format */
-
+require("dotenv").config(); // to use password from .env file
 var data = require("../data");
 const router = require("express").Router();
+const mongoose = require("mongoose");
 
-var requestTimeList = [];
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@phonebookapp.bsyflke.mongodb.net/?retryWrites=true&w=majority&appName=phonebookapp`;
+
+mongoose.connect(uri);
+const Person = require("../mongo");
+
 router.get("/", (req, res) => {
-  const requestTime = new Date();
-  requestTimeList.push(requestTime);
-  res.json({
-    data: data,
+  Person.find().then((result) => {
+    // got data from  mongodb database!!
+    console.log("persons is found in database", result);
+    res.send(response);
   });
 });
 
-router.get("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = data.find((person) => person.id === id);
+router.get("/:name", (req, res) => {
+  const reqName = req.params.name;
+  Person.find({ name: reqName }).then((result) => {
+    console.log("result", result);
+  });
+  /*  
   if (person) {
     res.status(200).json({
       message: "person successfully found",
     });
   } else {
     res.status(404).send("person not found");
-  }
+  } */
 });
 
 router.post("/", (req, res) => {

@@ -2,19 +2,17 @@
 
 import React from "react";
 
-const Persons = ({ persons, handleDelete, toggleImportance }) => {
+const Persons = ({ persons, handleDelete }) => {
   return (
     <div>
       {persons?.map((item, index) => {
-        const label = item.important ? "make not important" : "make important";
         return (
           <div key={index}>
             <p>
               {item.name}
-              {item.number} <button onClick={toggleImportance}>{label}</button>
-              {item.important ? (
-                <button onClick={() => handleDelete(item.id)}>Delete</button>
-              ) : null}
+              {item.number}
+
+              <button onClick={() => handleDelete(item.id)}>Delete</button>
             </p>
           </div>
         );
