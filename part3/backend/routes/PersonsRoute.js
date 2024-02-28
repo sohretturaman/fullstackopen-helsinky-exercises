@@ -28,8 +28,11 @@ router.get("/:id", (request, response, next) => {
       }
     })
     .catch((error) => {
-      console.log(error);
-      next(error);
+      console.log("error in get by id request");
+      next({
+        statusCode: 401,
+        message: "id is wrong bad request",
+      });
     });
 });
 
@@ -79,13 +82,18 @@ router.delete("/:id", (req, res, next) => {
         res.status(404).json({ error: "Person not found" });
       }
     })
-    .catch((error) => next(error));
+    .catch((error) =>
+      next({
+        statusCode: 401,
+        message: "cant find this user,user is not exist or id is wrong",
+      })
+    );
 });
 router.put("/:id", (req, res, next) => {
   const reqId = req.params.id;
 
   Person.updateOne(
-    { _id: reqId },
+    { id: reqId },
     {
       $set: {
         name: req.body.name,
@@ -99,7 +107,12 @@ router.put("/:id", (req, res, next) => {
         result: result,
       });
     })
-    .catch((error) => next(error));
+    .catch((error) =>
+      next({
+        statusCode: 401,
+        message: "could not edit this user",
+      })
+    );
 });
 
 module.exports = router; //!!dont forget to export
