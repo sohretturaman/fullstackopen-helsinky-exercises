@@ -1,6 +1,6 @@
 /** @format */
 require("dotenv").config(); // to use password from .env file
-var data = require("../data");
+
 const router = require("express").Router();
 const mongoose = require("mongoose");
 
@@ -13,7 +13,8 @@ router.get("/", (req, res) => {
   Person.find().then((result) => {
     // got data from  mongodb database!!
     console.log("persons is found in database", result);
-    res.send(response);
+
+    res.send(result);
   });
 });
 
@@ -33,24 +34,20 @@ router.get("/:name", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const newId = Math.floor(Math.random() * 100);
-  const newItem = { id: newId, name: req.body.name, number: req.body.number };
+  const newItem = { name: req.body.name, number: req.body.number };
 
-  console.log("new item data ", newItem);
-  if (!newItem.name || !newItem.number) {
-    return res.status(400).send("Missing name or number");
-  }
+  console.log("new item data in post request ", newItem);
 
-  const isExist = data.find((person) => person.name === newItem.name);
-
-  if (isExist) {
-    return res.status(409).send("Name already exists in the phonebook");
-  }
-
-  data.push(newItem); // Push the new item to the data array
-  res
-    .status(201)
-    .json({ message: "Person added successfully", person: newItem });
+  Person.create(newItem)
+    .then((result) => {
+      console.log("result in post request", result);
+      res
+        .status(201)
+        .json({ message: "Person added successfully", person: newItem });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 router.delete("/:id", (req, res) => {

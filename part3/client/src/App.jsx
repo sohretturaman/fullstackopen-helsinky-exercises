@@ -23,6 +23,17 @@ const App = () => {
   const handleInput = () => {
     console.log("newName", newName);
     console.log("newNumber", newNumber);
+    axios
+      .post("http://localhost:3001/api/persons", {
+        name: newName,
+        number: newNumber,
+      })
+      .then((response) => {
+        console.log("response in axios", response);
+        getAll();
+        setnewName("");
+        setNewNumber("");
+      });
   };
   const handleDelete = (id) => {
     console.log("pressed person id", id);
