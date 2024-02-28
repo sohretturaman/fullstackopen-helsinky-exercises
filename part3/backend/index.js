@@ -8,8 +8,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const app = express();
-
-//console.log("NODE_ENV", process.env.PASSWORD); //got passwprd from .env file
+console.log("NODE_ENV", process.env.USER); //got passwprd from .env file
 app.use(cors());
 app.use(requestLogger); //use middleware
 app.use(express.json());
@@ -21,7 +20,7 @@ app.use((req, res, next) => {
 
 app.use(morgan("tiny"));
 
-const uri = `mongodb+srv://sohretalya:${process.env.PASSWORD}@phonebookapp.bsyflke.mongodb.net/?retryWrites=true&w=majority&appName=phonebookapp`;
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@phonebookapp.bsyflke.mongodb.net/?retryWrites=true&w=majority&appName=phonebookapp`;
 
 mongoose.connect(uri);
 const Person = require("./mongo");
