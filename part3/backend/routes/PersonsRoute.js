@@ -81,5 +81,25 @@ router.delete("/:id", (req, res, next) => {
     })
     .catch((error) => next(error));
 });
+router.put("/:id", (req, res, next) => {
+  const reqId = req.params.id;
+
+  Person.updateOne(
+    { _id: reqId },
+    {
+      $set: {
+        name: req.body.name,
+      },
+      $currentDate: { lastUpdated: true },
+    }
+  )
+    .then((result) => {
+      res.json({
+        message: "Person updated successfully",
+        result: result,
+      });
+    })
+    .catch((error) => next(error));
+});
 
 module.exports = router; //!!dont forget to export
