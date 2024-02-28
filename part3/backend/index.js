@@ -43,7 +43,7 @@ const insertData = async () => {
 
 insertData();
 
-app.use(ErrorMiddleware); // use error middleware
+app.use(ErrorMiddleware); // should be under all routes and database intialization
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
