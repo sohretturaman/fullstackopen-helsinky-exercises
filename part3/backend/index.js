@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * eslint-env node
+ *
+ * @format
+ */
+
 require("dotenv").config(); // to use password from .env file
 var data = require("./data");
 const express = require("express");

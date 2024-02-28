@@ -1,4 +1,5 @@
 /** @format */
+/* eslint-env node */
 require("dotenv").config(); // to use password from .env file
 
 const router = require("express").Router();
