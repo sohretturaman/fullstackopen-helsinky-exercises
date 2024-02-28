@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(morgan("tiny"));
 
 const uri =
-  "mongodb+srv://meryemsohret:Trusthim00.@fullstack.emnetky.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
+  "mongodb+srv://meryemsohret:<password>@fullstack.emnetky.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
 
 mongoose.connect(uri);
 const Person = require("./mongo");
