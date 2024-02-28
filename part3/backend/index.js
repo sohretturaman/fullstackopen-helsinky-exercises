@@ -3,7 +3,6 @@ require("dotenv").config(); // to use password from .env file
 var data = require("./data");
 const express = require("express");
 const requestLogger = require("./logger");
-const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
@@ -17,8 +16,6 @@ app.use((req, res, next) => {
   req.requestTime = new Date();
   next();
 });
-
-app.use(morgan("tiny"));
 
 const personsRouter = require("./routes/PersonsRoute");
 app.use("/api/persons", personsRouter);
@@ -49,39 +46,21 @@ const insertData = async () => {
 
 insertData();
 
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
-});
-
-/* 
-GOT DATA FROM APİ WİTH HTTP SERVER
-http
-  .createServer(function (req, res) {
-    // res.writeHead(200, { "Content-Type": "text/html" });
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.write(JSON.stringify(data));
-    //res.write("<h1>Hello World</h1>");
-    res.end();
-  })
-  .listen(3001, () => {
-    console.log("server is running on port 3001");
-  });
-
-
-  EDİTTED MORGAN 
-  const EdittedMorgan = morgan(function (tokens, req, res) {
-  if (res.statusCode >= 200 && res.statusCode < 300) {
-    return [
-      tokens.method(req, res),
-      tokens.url(req, res),
-      tokens.status(req, res),
-      tokens.res(req, res, "content-length"),
-      "-",
-      tokens["response-time"](req, res),
-      "ms",
-    ].join(" ");
+// Error handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    // Bad request (e.g., malformed JSON)
+    console.error("400 Bad Request:", err.message);
+    res.status(400).json({ error: "Bad Request 400" });
+  } else if (err.status === 404) {
+    res.status(404).json({ error: "The person is not Found 404" });
+  } else {
+    // Internal server error
+    console.error("500 Internal Server Error:", err.message);
+    res.status(500).json({ error: "Internal Server Error 500" });
   }
 });
 
-//app.use(EdittedMorgan);
- */
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
+});

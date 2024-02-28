@@ -18,6 +18,21 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((result) => {
+      if (result) {
+        response.send(result);
+      } else {
+        response.status(404).end(); //end request
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
+});
+
 router.get("/:name", (req, res) => {
   const reqName = req.params.name;
   Person.find({ name: reqName }).then((result) => {
@@ -33,7 +48,7 @@ router.get("/:name", (req, res) => {
   } */
 });
 
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   const newItem = { name: req.body.name, number: req.body.number };
 
   console.log("new item data in post request ", newItem);
@@ -46,23 +61,25 @@ router.post("/", (req, res) => {
         .json({ message: "Person added successfully", person: newItem });
     })
     .catch((error) => {
-      console.log(error);
+      next(error);
     });
 });
 
-router.delete("/:id", (req, res) => {
-  const reqId = Number(req.params.id);
+router.delete("/:id", (req, res, next) => {
+  const id = req.params.id;
 
-  const person = data.find((person) => person.id === reqId);
-  if (person) {
-    data = data.filter((person) => person.id !== reqId);
-    res.status(200).json({
-      message: "person is successfully deleted",
-      person: person,
-    });
-  } else {
-    res.status(404).send("person not found");
-  }
+  Person.findByIdAndDelete(id)
+    .then((deletedPerson) => {
+      if (deletedPerson) {
+        res.json({
+          message: "Person successfully deleted",
+          person: deletedPerson,
+        });
+      } else {
+        res.status(404).json({ error: "Person not found" });
+      }
+    })
+    .catch((error) => next(error));
 });
 
 module.exports = router; //!!dont forget to export
