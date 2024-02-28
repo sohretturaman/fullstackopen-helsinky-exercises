@@ -8,7 +8,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const app = express();
-console.log("NODE_ENV", process.env.USER); //got passwprd from .env file
+
 app.use(cors());
 app.use(requestLogger); //use middleware
 app.use(express.json());
@@ -19,6 +19,9 @@ app.use((req, res, next) => {
 });
 
 app.use(morgan("tiny"));
+
+const personsRouter = require("./routes/PersonsRoute");
+app.use("/api/persons", personsRouter);
 
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@phonebookapp.bsyflke.mongodb.net/?retryWrites=true&w=majority&appName=phonebookapp`;
 
@@ -41,63 +44,6 @@ init();
 /* app.get("/", (req, res) => {
   res.json(data);
 }); */
-
-var requestTimeList = [];
-app.get("/api/persons", (req, res) => {
-  const requestTime = new Date();
-  requestTimeList.push(requestTime);
-  res.json({
-    data: data,
-  });
-});
-
-app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = data.find((person) => person.id === id);
-  if (person) {
-    res.status(200).json({
-      message: "person successfully found",
-    });
-  } else {
-    res.status(404).send("person not found");
-  }
-});
-
-app.post("/api/persons", (req, res) => {
-  const newId = Math.floor(Math.random() * 100);
-  const newItem = { id: newId, name: req.body.name, number: req.body.number };
-
-  console.log("new item data ", newItem);
-  if (!newItem.name || !newItem.number) {
-    return res.status(400).send("Missing name or number");
-  }
-
-  const isExist = data.find((person) => person.name === newItem.name);
-
-  if (isExist) {
-    return res.status(409).send("Name already exists in the phonebook");
-  }
-
-  data.push(newItem); // Push the new item to the data array
-  res
-    .status(201)
-    .json({ message: "Person added successfully", person: newItem });
-});
-
-app.delete("/api/persons/:id", (req, res) => {
-  const reqId = Number(req.params.id);
-
-  const person = data.find((person) => person.id === reqId);
-  if (person) {
-    data = data.filter((person) => person.id !== reqId);
-    res.status(200).json({
-      message: "person is successfully deleted",
-      person: person,
-    });
-  } else {
-    res.status(404).send("person not found");
-  }
-});
 
 app.get("/info", (req, res) => {
   const length = data.length;
