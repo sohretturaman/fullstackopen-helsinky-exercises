@@ -1,21 +1,28 @@
 /** @format */
 
-const logger = require("./logger");
+const { ErrorInfo, Information } = require("./logger");
 
-const requestLogger = (request, response, next) => {
-  logger.info("Method:", request.method);
-  logger.info("Path:  ", request.path);
-  logger.info("Body:  ", request.body);
-  logger.info("---");
+//request logger infor comes form request not
+
+const requestMiddleware = (req, res, next) => {
+  Information("post adress", req.post);
+  Information("request path", req.path);
+  Information("request type", req.type);
+  Information("request body", req.body);
   next();
 };
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "endpoint is not found" });
+  //sent response, no need next
+};
+
+const badRequest = (req, res) => {
+  res.status(404).send({ error: "bad request " });
 };
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message);
+  ErrorInfo(error.message);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
@@ -27,7 +34,8 @@ const errorHandler = (error, request, response, next) => {
 };
 
 module.exports = {
-  requestLogger,
+  requestMiddleware,
   unknownEndpoint,
+  badRequest,
   errorHandler,
 };

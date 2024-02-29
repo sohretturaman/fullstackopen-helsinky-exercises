@@ -1,14 +1,14 @@
 /** @format */
 
-const info = (...params) => {
-  console.log(...params);
+const Information = (...props) => {
+  console.log(...props);
 };
 
-const error = (...params) => {
-  console.error(...params);
+const ErrorInfo = (...props) => {
+  console.log(...props);
 };
 
 module.exports = {
-  info,
-  error,
+  Information,
+  ErrorInfo,
 };
