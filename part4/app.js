@@ -7,6 +7,7 @@ const cors = require("cors");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const blogsRouter = require("./contollers/blogRouter");
+app.use(express.json());
 
 const connectDB = require("./utils/db");
 
@@ -14,7 +15,7 @@ const Blog = require("./models/blog");
 
 logger.Information("connecting to", config.MONGODB_URI);
 
-app.get("/api/blogs", (req, res) => {
+app.get("/", (req, res) => {
   Blog.find()
     .then((result) => {
       res.status(200).json(result);
