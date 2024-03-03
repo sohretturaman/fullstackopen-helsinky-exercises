@@ -2,6 +2,7 @@
 
 const mongoose = require("mongoose");
 const config = require("./config");
+mongoose.set("strictQuery", false); //fromat query
 const connectDB = () => {
   const url = config.MONGODB_URI;
 
