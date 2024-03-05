@@ -7,6 +7,7 @@ const cors = require("cors");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const blogsRouter = require("./contollers/blogRouter");
+const userRouter = require("./contollers/userRouter");
 app.use(express.json());
 
 const connectDB = require("./utils/db");
@@ -32,6 +33,8 @@ app.use(express.json());
 app.use(middleware.requestMiddleware);
 
 app.use("/api/blogs", blogsRouter);
+
+app.use("/api/users", userRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

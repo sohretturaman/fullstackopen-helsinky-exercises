@@ -51,13 +51,21 @@ router.post("/", (req, res) => {
     url: req.body.url,
   });
 
-  blog.save().then((result) => {
-    if (!blog.title || !blog.url) {
-      res.send(400); //bad request
-    }
-    Information("data saved to mongodb");
-    res.status(201).json(result);
-  });
+  // Check if title or url is missing
+  if (!blog.title || !blog.url) {
+    return res.status(400).json({ error: "Title or URL is missing" }); // Respond with 400 Bad Request
+  }
+
+  // Save the blog to the database
+  blog
+    .save()
+    .then((result) => {
+      Information("data saved to mongodb");
+      res.status(201).json(result); // Respond with 201 Created
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Internal Server Error" }); // Respond with 500 Internal Server Error
+    });
 });
 
 router.delete("/:id", async (req, res) => {
