@@ -52,6 +52,9 @@ router.post("/", (req, res) => {
   });
 
   blog.save().then((result) => {
+    if (!blog.title || !blog.url) {
+      res.send(400); //bad request
+    }
     Information("data saved to mongodb");
     res.status(201).json(result);
   });

@@ -41,3 +41,12 @@ describe("post request", async () => {
     ]);
   });
 });
+
+test("send 400 code if url or title is missing in post request", async (res, req) => {
+  const newBlog = {
+    author: "elif Şafak ",
+    likes: 20,
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+});
