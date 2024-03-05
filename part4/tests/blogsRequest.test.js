@@ -28,7 +28,9 @@ describe("post request", async () => {
       .expect("Content-Type", /application\/json/);
 
     const blog = response.body;
-    assert.strictEqual(blog.id, blog._id); // Ensure id property is mapped correctly
+    assert.strictEqual(blog.id, blog._id); // the id is named correctly
+    assert.strictEqual(blog.likes, 0); // is like 0
+    assert.ok(blog.hasOwnProperty("likes")); // like porperty is exist or not in blog object
 
     const blogs = await api.get("/api/blogs");
 
