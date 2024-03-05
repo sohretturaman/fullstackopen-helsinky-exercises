@@ -61,11 +61,36 @@ router.post("/", (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  //Implemented functionality for deleting a single blog post , used  async/await.
   const blogs = await Blog.find({});
   console.log("operation returned the following blogs", blogs);
 
   const response = await blogs[0].deleteOne();
   console.log("the first note is removed", response); // use async instead of promises
+});
+
+router.put("/api/blogs/:id", async (req, res) => {
+  //Implemented functionality for updating the information of an individual blog post.
+
+  try {
+    const response = await Blog.updateOne(
+      { _id: req.params.id },
+      {
+        $set: {
+          likes: req.body.likes,
+          author: req.body.author,
+          url: req.body.url,
+        },
+        $currentDate: { lastModified: true },
+      }
+    );
+
+    if (response) {
+      res.send(200); // updated successfully
+    }
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 module.exports = router;
