@@ -7,6 +7,8 @@ const ObjectId = require("mongoose").Types.ObjectId; // got object id  to check 
 const { createCrudFuncs } = require("../serivces/index");
 const BlogsCrud = createCrudFuncs(Blog);
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const { getTokenFrom } = require("../utils/tokenMiddleware");
 
 router.get("/", async (req, res) => {
   /*   BlogsCrud.getAll().then((data) => {

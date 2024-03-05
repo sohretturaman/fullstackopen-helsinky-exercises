@@ -10,7 +10,9 @@ const blogsRouter = require("./contollers/blogRouter");
 const userRouter = require("./contollers/userRouter");
 const notesRouter = require("./contollers/notesRouter");
 const loginRouter = require("./contollers/login");
+const { getTokenFrom } = require("./utils/tokenMiddleware");
 app.use(express.json());
+app.use(getTokenFrom);
 
 const connectDB = require("./utils/db");
 
