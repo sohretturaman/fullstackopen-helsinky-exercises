@@ -7,8 +7,8 @@ const User = require("../models/user");
 const userRouter = express.Router();
 
 userRouter.post("/", async (req, res) => {
-  const { username, password, name } = req.body;
-
+  const { username, password, name, blogs } = req.body;
+  console.log("blogs in userRouter", blogs);
   if (!username || !password || !name) {
     return res
       .status(400)
@@ -27,6 +27,7 @@ userRouter.post("/", async (req, res) => {
       username,
       password: hashedPassword,
       name,
+      blogs,
     });
 
     const savedUser = await newUser.save();
@@ -39,7 +40,7 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.get("/", async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate("blogs"); // get all blogs of user , populate it
     res.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

@@ -1,10 +1,12 @@
 /** @format */
+const mongoose = require("mongoose");
 
-const mongosee = require("mongoose");
-
-const noteSchema = new mongosee.Schema({
-  content: String,
+const noteSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    minlength: 5,
+  },
   important: Boolean,
 });
-
-module.exports = mongosee.model("Note", noteSchema);
+module.exports = mongoose.model("Note", noteSchema);

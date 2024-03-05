@@ -8,6 +8,7 @@ const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const blogsRouter = require("./contollers/blogRouter");
 const userRouter = require("./contollers/userRouter");
+const notesRouter = require("./contollers/notesRouter");
 app.use(express.json());
 
 const connectDB = require("./utils/db");
@@ -35,6 +36,7 @@ app.use(middleware.requestMiddleware);
 app.use("/api/blogs", blogsRouter);
 
 app.use("/api/users", userRouter);
+app.use("/api/notes", notesRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

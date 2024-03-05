@@ -6,6 +6,7 @@ const { Information } = require("../utils/logger");
 const ObjectId = require("mongoose").Types.ObjectId; // got object id  to check for id format from request
 const { createCrudFuncs } = require("../serivces/index");
 const BlogsCrud = createCrudFuncs(Blog);
+const User = require("../models/user");
 
 router.get("/", async (req, res) => {
   /*   BlogsCrud.getAll().then((data) => {
@@ -15,9 +16,16 @@ router.get("/", async (req, res) => {
       res.status(404).send({ error: "no data found" });
     }
   }); */
-  const blogs = await BlogsCrud.getAll({}); // use async instead of promises
 
-  res.json(blogs);
+  //const blogs = await BlogsCrud.getAll({}); // use async instead of promises
+
+  try {
+    const blogs = await Blog.find({}).populate("user", "username name _id");
+    res.json(blogs);
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.get("/:id", (req, res, next) => {
@@ -43,12 +51,17 @@ router.get("/:id", (req, res, next) => {
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
+  const body = req.body;
+  const user = await User.findById(body.user);
+  console.log("user in post request", user);
+
   const blog = new Blog({
     title: req.body.title,
     author: req.body.author,
     likes: req.body.likes,
     url: req.body.url,
+    user: req.body.user,
   });
 
   // Check if title or url is missing
@@ -57,15 +70,10 @@ router.post("/", (req, res) => {
   }
 
   // Save the blog to the database
-  blog
-    .save()
-    .then((result) => {
-      Information("data saved to mongodb");
-      res.status(201).json(result); // Respond with 201 Created
-    })
-    .catch((error) => {
-      res.status(500).json({ error: "Internal Server Error" }); // Respond with 500 Internal Server Error
-    });
+  const savedNote = await blog.save();
+  user.blogs = user.blogs.concat(savedNote._id);
+  await user.save();
+  res.status(201).json(savedNote); // Respond with 201 Created
 });
 
 router.delete("/:id", async (req, res) => {
