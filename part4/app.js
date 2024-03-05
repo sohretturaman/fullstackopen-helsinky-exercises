@@ -9,6 +9,7 @@ const logger = require("./utils/logger");
 const blogsRouter = require("./contollers/blogRouter");
 const userRouter = require("./contollers/userRouter");
 const notesRouter = require("./contollers/notesRouter");
+const loginRouter = require("./contollers/login");
 app.use(express.json());
 
 const connectDB = require("./utils/db");
@@ -37,6 +38,7 @@ app.use("/api/blogs", blogsRouter);
 
 app.use("/api/users", userRouter);
 app.use("/api/notes", notesRouter);
+app.use("/api/login", loginRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
