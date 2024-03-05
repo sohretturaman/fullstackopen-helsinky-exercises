@@ -50,7 +50,7 @@ router.get("/:id", (req, res, next) => {
       });
   }
 });
-
+/* 
 router.post("/", async (req, res) => {
   const body = req.body;
   const user = await User.findById(body.user);
@@ -74,7 +74,7 @@ router.post("/", async (req, res) => {
   user.blogs = user.blogs.concat(savedNote._id);
   await user.save();
   res.status(201).json(savedNote); // Respond with 201 Created
-});
+}); */
 
 router.delete("/:id", async (req, res) => {
   //Implemented functionality for deleting a single blog post , used  async/await.
@@ -107,6 +107,31 @@ router.put("/api/blogs/:id", async (req, res) => {
   } catch (error) {
     res.json(error);
   }
+});
+
+router.post("/", async (req, res) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+  console.log("user in post request", user);
+  const blog = new Blog({
+    title: req.body.title,
+    author: req.body.author,
+    likes: req.body.likes,
+    url: req.body.url,
+    user: req.body.user,
+  });
+
+  if (!blog.title || !blog.url) {
+    return res.status(400).json({ error: "Title or URL is missing" });
+  }
+
+  const savedNote = await blog.save();
+  user.blogs = user.blogs.concat(savedNote._id);
+  await user.save();
+  res.status(201).json(savedNote);
 });
 
 module.exports = router;
