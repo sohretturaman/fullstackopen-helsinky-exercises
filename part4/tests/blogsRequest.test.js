@@ -2,7 +2,7 @@
 
 const app = require("../app");
 const supertest = require("supertest");
-const { test, describe } = require("node:test");
+const assert = require("assert");
 
 const api = supertest(app);
 
@@ -14,25 +14,28 @@ test("api returns 200", async () => {
 });
 
 describe("post request", async () => {
-  test("valid blog is can be added 200", async () => {
+  test("valid blog can be added and id is named correctly", async () => {
     const newBlog = {
       title: "beyaz fil",
       author: "Elif Şafak",
       url: "http://localhost:?",
       likes: 200,
     };
-    await app
+    const response = await api
       .post("/api/blogs")
       .send(newBlog)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    const blogs = await app.get("api/blogs");
+    const blog = response.body;
+    assert.strictEqual(blog.id, blog._id); // Ensure id property is mapped correctly
+
+    const blogs = await api.get("/api/blogs");
 
     const contents = blogs.body.map((blog) => blog.title);
     assert.deepEqual(contents, [
       "beyaz fil",
-      //change content for pass to test
+      // Add other expected titles here if necessary
     ]);
   });
 });
