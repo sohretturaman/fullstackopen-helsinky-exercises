@@ -5,18 +5,18 @@ const supertest = require("supertest");
 
 const app = require("./app");
 
-//const api = supertest(app); // use supertest
+const api = supertest(app); // use supertest
 
 // ...
 
 //The contents of the index.js file used for starting the application gets simplified as follows:
 
-const config = require("./utils/config");
+/* const config = require("./utils/config");
 const logger = require("./utils/logger");
 
 app.listen(config.PORT, () => {
   logger.Information(`Server running on port ${config.PORT}`);
-});
+}); */
 
 // "type": "module", ADD ON PACKAGE JSON TO CHANGE İMPORT STYLE
 

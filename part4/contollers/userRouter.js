@@ -14,6 +14,11 @@ userRouter.post("/", async (req, res) => {
       .status(400)
       .json({ error: "Username, password, and name are required" });
   }
+  if (username.lengths < 3 || password.length < 3 || name.length < 3) {
+    return res.status(400).json({
+      error: "Username, password, and name are not invaild try agin ",
+    });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +33,7 @@ userRouter.post("/", async (req, res) => {
     res.status(201).json(savedUser);
   } catch (error) {
     console.error("Error creating user:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({ error: "Bad Request " });
   }
 });
 
